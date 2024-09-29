@@ -2,7 +2,7 @@
 
 The goal of this project is to create district geometry from point data.
 There are many district types in the state of New York,
-such as Fire, Municipal Court, Ward, County Legislature,
+such as Town, City, County, Ward, County Legislature, Village, Municipal Court, City Council,
 Congressional, Senate, Assembly, and Election districts.
 For now, I will focus on the latter four.
 

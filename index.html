@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="english">
   <head>
     <meta charset="utf-8">
     <title>Election District Shape Creation</title>
@@ -16,17 +16,53 @@
   
   <body>
     <h1>Project summary</h1>
-    There are many district types in the state of New York, such as Town/City, County, Congressional, Senate, Assembly, and Election districts.
-    Election districts are the units that these other districts are made up of. In other words, an Election district cannot cross the borders of any of these other districts.
+    There are many district types in the state of New York, such as Town/City, County, Congressional, Senate, Assembly, and Election districts (EDs).
+    Election districts are the units that these other districts are made up of. In other words, an Election district cannot cross any borders of these other districts.
     In brief, everyone within an election district has the same polling place.
     The goal of this project is to create geometry data for Election districts.
 
     <h1>Data Sources</h1>
       <h2>Voterfile</h2>
+        <ul>
+          <li>The voterfile contains information for every registered voter in New York state</li>
+          <li>Most importantly here, it has addresses, and the districts those addresses are assigned to</li>
+          <li>We will use this as base election district data, and to narrow our search for overlaps</li>
+        </ul>
       <h2>GIS Streets</h2>
+        <ul>
+          <li>The NYS GIS Clearinghouse publishes geospatial data covering all streets in the state</li>
+          <li>Each street is split into segments, including wherever it intersects with another street</li>
+          <li>Each segment comes with lots of information, such as the town/city the segment starts and ends in</li>
+       </ul>
       <h2>Maps</h2>
+        <ul>
+          <li>By law, Congressional, state Senate, and Assembly geospatial data is published <a href="https://latfor.state.ny.us/maps/">here</a></li>
+          <li>GIS also has data for towns and cities (every place in New York is within a town or city)</li>
+        </ul>
     <!-- Load additional JS scripts here -->
     <script type="text/javascript" src="script.js"></script>
-    
+
+    <h1>Requirements</h1>
+      Our starting point is having no election districts at all, so anything is an improvement.
+      The results certainly won't be perfect: for one thing, we don't have geospatial data for Wards (subdivisions of Towns).
+      Election districts must lie entirely within a single Ward, in addition to the other district types.
+
+    <h1>Preparation</h1>
+      First, some cleaning of the Streets data. I removed most of the columns, since their data is not relevant to this application.
+      I also remove all irrelevant segments: cul-de-sacs, hiking trails, and offshoots from other roads that cannot form a boundary.
+      Next, I collected all possible mappings of people's districts in the voterfile.
+      This will greatly reduce our work overlapping districts later:
+      we only need to create geometry for overlapping districts if someone actually lives in a place they overlap.
+      Using SAGE, I also turned these addresses into coordinates for later use.
+
+    <h1>The Geometry Part</h1>
+      Now, we're ready to loop over every town/city. For each, we'll first get all the Street segments within it.
+      Using PostGIS (a PostgreSQL extension for manipulating geospatial data) and with some pre-processing, we'll turn the line data into polygons.
+      Next, we'll use our data from the voterfile to see which other districts intersect the current town/city.
+      Using PostGIS, we'll create overlaps: the intersections of Congressional, state Senate, County, and Assembly maps within a town/city.
+      We'll intersect this with the earlier polygonized Streets data to create new polygons.
+      Note that all of this has to be done first: in the voterfile, ED numbers are only unique within their overlap.
+      Now, we'll plot all the earlier points. This gives us good coverage: Almost all of the millions of addresses from the voterfile have an ED.
+      Lastly, some simplification. There may still be some polygons without any addresses in them. These can often be combined by looking at surrounding polygons.
   </body>
 </html>

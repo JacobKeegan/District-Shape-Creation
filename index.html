@@ -15,10 +15,15 @@
   </head>
   
   <body>
+    <h1>District Shape Creation</h1>
+      Author: Jacob Keegan<br>
+      <a href="https://www.youtube.com/watch?v=3Zxzjm7zl2Y">Final Presentation</a>
+
     <h1>Project summary</h1>
-    There are many district types in the state of New York, such as Town/City, County, Congressional, Senate, Assembly, and Election districts (EDs).
-    Election districts are the units that these other districts are made up of. In other words, an Election district cannot cross any borders of these other districts.
-    In brief, everyone within an election district has the same polling place.
+    There are many district types in the state of New York, such as Town/City, County, Congressional, Senate, Assembly, and Election districts (EDs).<br>
+    Election districts are the units that these other districts are made up of.<br>
+    In other words, an Election district cannot cross any borders of these other districts.<br>
+    In brief, everyone within an election district has the same polling place.<br>
     The goal of this project is to create geometry data for Election districts.
 
     <h1>Data Sources</h1>
@@ -28,17 +33,21 @@
           <li>Most importantly here, it has addresses, and the districts those addresses are assigned to</li>
           <li>We will use this as base election district data, and to narrow our search for overlaps</li>
         </ul>
-      <h2>GIS Streets</h2>
+      <h2><a href="https://data.gis.ny.gov/datasets/nys-streets">GIS Streets</a></h2>
         <ul>
           <li>The NYS GIS Clearinghouse publishes geospatial data covering all streets in the state</li>
           <li>Each street is split into segments, including wherever it intersects with another street</li>
           <li>Each segment comes with lots of information, such as the town/city the segment starts and ends in</li>
-       </ul>
-      <h2>Maps</h2>
+        </ul>
+    A sample screenshot of GIS data:<br>
+    <img src="nys_streets_example.png" alt="An example of GIS streets data"><br>
+      <h2><a href="https://latfor.state.ny.us/maps/">Maps</a></h2>
         <ul>
-          <li>By law, Congressional, state Senate, and Assembly geospatial data is published <a href="https://latfor.state.ny.us/maps/">here</a></li>
+          <li>By law, Congressional, state Senate, and Assembly geospatial data is published online by LATFOR</li>
           <li>GIS also has data for towns and cities (every place in New York is within a town or city)</li>
         </ul>
+    An example screenshot of upstate Congressional LATFOR maps:<br>
+    <img src="statewide_congress_maps.png" alt="A LATFOR map of Congressional districts">
     <!-- Load additional JS scripts here -->
     <script type="text/javascript" src="script.js"></script>
 
@@ -55,7 +64,7 @@
       we only need to create geometry for overlapping districts if someone actually lives in a place they overlap.<br>
       Using SAGE, I also turned these addresses into coordinates for later use.
 
-    <h1>The Geometry Part</h1>
+    <h1>Geometric Operations</h1>
       Now, we're ready to loop over every town/city. For each, we'll first get all the Street segments within it.<br>
       Using PostGIS (a PostgreSQL extension for manipulating geospatial data) and with some pre-processing, we'll turn the line data into polygons.<br>
       Next, we'll use our data from the voterfile to see which other districts intersect the current town/city.<br>
@@ -67,14 +76,25 @@
 
     <h1>Runtime Analysis</h1>
     Functionally, the runtime is actually dominated by geocoding of addresses (that is, mapping them to points).<br>
-    This requires making API requests over the Internet, making it significantly slower than other work, when replicated over millions of addresses.
+    This requires making API requests over the internet, making it significantly slower than other work, when replicated over millions of addresses.
 
     <h1>Results</h1>
-    <img src="full_map.png" alt="Full ED map">
-    <img src="town_ed_comparison.png" alt="Comparison of town/city and ED maps">
-    <img src="NYC_comparison.png" alt="Comparison of NYC city and ED maps">
-
-    <a href="https://www.youtube.com/watch?v=3Zxzjm7zl2Y">Final Presentation</a>
-  Author: Jacob Keegan
+    Unfortunately, these results are generated and displayed in SAGE,<br>
+    which only runs on the Senate's servers with a paid key from Google to display the maps.<br>
+    So, here I will share a small selection of results.<br><br>
+    Below is the full map for EDs created across New York state.<br>
+    <img src="full_map.png" alt="Full ED map"><br><br>
+    Overall, we got decent coverage. However, there are some clear gaps in several areas.<br>
+    I believe these gaps are because of missing towns/cities from the voterfile.<br>
+    The database I am using only associated towns/cities with ~75% of addresses in the voterfile.<br>
+    This is compared to over 99% for Congressional, state Senate, Assembly, and Election districts.<br>
+    It may be that such information is simply missing from many entries in the original voterfile,<br>
+    or the parser I wrote at work doesn't correctly match some of them.<br>
+    To support this claim, see below. Note the similarities between the town/city map on the left,<br>
+    and the missing election districts on the right.<br>
+    <img src="town_ed_comparison.png" alt="Comparison of town/city and ED maps"><br>
+    But the coverage of some areas is extensive. For example, look at the city map of NYC on the left,<br>
+    vs. the ED map on the right.<br>
+    <img src="NYC_comparison.png" alt="Comparison of NYC city and ED maps"><br>
   </body>
 </html>

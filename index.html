@@ -43,26 +43,38 @@
     <script type="text/javascript" src="script.js"></script>
 
     <h1>Requirements</h1>
-      Our starting point is having no election districts at all, so anything is an improvement.
-      The results certainly won't be perfect: for one thing, we don't have geospatial data for Wards (subdivisions of Towns).
+      Our starting point is having no election districts at all, so anything is an improvement.<br>
+      The results certainly won't be perfect: for one thing, we don't have geospatial data for Wards (subdivisions of Towns).<br>
       Election districts must lie entirely within a single Ward, in addition to the other district types.
 
     <h1>Preparation</h1>
-      First, some cleaning of the Streets data. I removed most of the columns, since their data is not relevant to this application.
-      I also remove all irrelevant segments: cul-de-sacs, hiking trails, and offshoots from other roads that cannot form a boundary.
-      Next, I collected all possible mappings of people's districts in the voterfile.
-      This will greatly reduce our work overlapping districts later:
-      we only need to create geometry for overlapping districts if someone actually lives in a place they overlap.
+      First, some cleaning of the Streets data. I removed most of the columns, since their data is not relevant to this application.<br>
+      I also remove all irrelevant segments: cul-de-sacs, hiking trails, and offshoots from other roads that cannot form a boundary.<br>
+      Next, I collected all possible mappings of people's districts in the voterfile.<br>
+      This will greatly reduce our work overlapping districts later:<br>
+      we only need to create geometry for overlapping districts if someone actually lives in a place they overlap.<br>
       Using SAGE, I also turned these addresses into coordinates for later use.
 
     <h1>The Geometry Part</h1>
-      Now, we're ready to loop over every town/city. For each, we'll first get all the Street segments within it.
-      Using PostGIS (a PostgreSQL extension for manipulating geospatial data) and with some pre-processing, we'll turn the line data into polygons.
-      Next, we'll use our data from the voterfile to see which other districts intersect the current town/city.
-      Using PostGIS, we'll create overlaps: the intersections of Congressional, state Senate, County, and Assembly maps within a town/city.
-      We'll intersect this with the earlier polygonized Streets data to create new polygons.
-      Note that all of this has to be done first: in the voterfile, ED numbers are only unique within their overlap.
-      Now, we'll plot all the earlier points. This gives us good coverage: Almost all of the millions of addresses from the voterfile have an ED.
+      Now, we're ready to loop over every town/city. For each, we'll first get all the Street segments within it.<br>
+      Using PostGIS (a PostgreSQL extension for manipulating geospatial data) and with some pre-processing, we'll turn the line data into polygons.<br>
+      Next, we'll use our data from the voterfile to see which other districts intersect the current town/city.<br>
+      Using PostGIS, we'll create overlaps: the intersections of Congressional, state Senate, County, and Assembly maps within a town/city.<br>
+      We'll intersect this with the earlier polygonized Streets data to create new polygons.<br>
+      Note that all of this has to be done first: in the voterfile, ED numbers are only unique within their overlap.<br>
+      Now, we'll plot all the earlier points. This gives us good coverage: Almost all of the millions of addresses from the voterfile have an ED.<br>
       Lastly, some simplification. There may still be some polygons without any addresses in them. These can often be combined by looking at surrounding polygons.
+
+    <h1>Runtime Analysis</h1>
+    Functionally, the runtime is actually dominated by geocoding of addresses (that is, mapping them to points).<br>
+    This requires making API requests over the Internet, making it significantly slower than other work, when replicated over millions of addresses.
+
+    <h1>Results</h1>
+    <img src="full_map.png" alt="Full ED map">
+    <img src="town_ed_comparison.png" alt="Comparison of town/city and ED maps">
+    <img src="NYC_comparison.png" alt="Comparison of NYC city and ED maps">
+
+    <a href="https://www.youtube.com/watch?v=3Zxzjm7zl2Y">Final Presentation</a>
+  Author: Jacob Keegan
   </body>
 </html>

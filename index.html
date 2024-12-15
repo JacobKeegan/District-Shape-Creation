@@ -75,26 +75,28 @@
       Lastly, some simplification. There may still be some polygons without any addresses in them. These can often be combined by looking at surrounding polygons.
 
     <h1>Runtime Analysis</h1>
-    Functionally, the runtime is actually dominated by geocoding of addresses (that is, mapping them to points).<br>
-    This requires making API requests over the internet, making it significantly slower than other work, when replicated over millions of addresses.
+      Functionally, the runtime is actually dominated by geocoding of addresses (that is, mapping them to points).<br>
+      This requires making API requests over the internet, making it significantly slower than other work, when replicated over millions of addresses.<br>
+      An example of time taken for major steps is provided below.<br>
+    <img src="final_times.JPG" alt="Time taken for project steps">
 
     <h1>Results</h1>
-    Unfortunately, these results are generated and displayed in SAGE,<br>
-    which only runs on the Senate's servers with a paid key from Google to display the maps.<br>
-    So, here I will share a small selection of results.<br><br>
-    Below is the full map for EDs created across New York state.<br>
+      Unfortunately, these results are generated and displayed in SAGE,<br>
+      which only runs on the Senate's servers with a paid key from Google to display the maps.<br>
+      So, here I will share a small selection of results.<br><br>
+      Below is the full map for EDs created across New York state.<br>
     <img src="full_map.png" alt="Full ED map"><br><br>
-    Overall, we got decent coverage. However, there are some clear gaps in several areas.<br>
-    I believe these gaps are because of missing towns/cities from the voterfile.<br>
-    The database I am using only associated towns/cities with ~75% of addresses in the voterfile.<br>
-    This is compared to over 99% for Congressional, state Senate, Assembly, and Election districts.<br>
-    It may be that such information is simply missing from many entries in the original voterfile,<br>
-    or the parser I wrote at work doesn't correctly match some of them.<br>
-    To support this claim, see below. Note the similarities between the town/city map on the left,<br>
-    and the missing election districts on the right.<br>
+      Overall, we got decent coverage. However, there are some clear gaps in several areas.<br>
+      I believe these gaps are because of missing towns/cities from the voterfile.<br>
+      The database I am using only associated towns/cities with ~75% of addresses in the voterfile.<br>
+      This is compared to over 99% for Congressional, state Senate, Assembly, and Election districts.<br>
+      It may be that such information is simply missing from many entries in the original voterfile,<br>
+      or the parser I wrote at work doesn't correctly match some of them.<br>
+      To support this claim, see below. Note the similarities between the town/city map on the left,<br>
+      and the missing election districts on the right.<br>
     <img src="town_ed_comparison.png" alt="Comparison of town/city and ED maps"><br>
-    But the coverage of some areas is extensive. For example, look at the city map of NYC on the left,<br>
-    vs. the ED map on the right.<br>
+      But the coverage of some areas is extensive. For example, look at the city map of NYC on the left,<br>
+      vs. the ED map on the right.<br>
     <img src="NYC_comparison.png" alt="Comparison of NYC city and ED maps"><br>
   </body>
 </html>
